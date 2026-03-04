@@ -569,6 +569,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="social-share">
+        <span class="share-label">Share:</span>
+        <button class="share-button share-twitter" data-activity="${name}" aria-label="Share on X (Twitter)">𝕏</button>
+        <button class="share-button share-facebook" data-activity="${name}" aria-label="Share on Facebook">f</button>
+        <button class="share-button share-copy" data-activity="${name}" aria-label="Copy link">🔗</button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -586,6 +592,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for social share buttons
+    activityCard.querySelector(".share-twitter").addEventListener("click", () => {
+      const text = `Check out ${name} at Mergington High School! ${details.description}`;
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+
+    activityCard.querySelector(".share-facebook").addEventListener("click", () => {
+      const pageUrl = encodeURIComponent(window.location.href);
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}&quote=${encodeURIComponent(name)}`;
+      window.open(url, "_blank", "noopener,noreferrer");
+    });
+
+    activityCard.querySelector(".share-copy").addEventListener("click", (event) => {
+      const shareText = `${name} - ${details.description} | Schedule: ${formatSchedule(details)}`;
+      navigator.clipboard.writeText(shareText).then(() => {
+        const btn = event.currentTarget;
+        const original = btn.textContent;
+        btn.textContent = "✓";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+    });
 
     activitiesList.appendChild(activityCard);
   }
